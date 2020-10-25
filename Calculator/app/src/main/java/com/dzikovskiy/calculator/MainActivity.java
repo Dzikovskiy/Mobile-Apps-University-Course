@@ -1,21 +1,37 @@
 package com.dzikovskiy.calculator;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bac, bc, bp, bsqrt, bplus, bminus, bdiv, bmod, bequal, bdot, bbrac1, bbrac2, bsin, bcos, btan, bsquare, bpi, bfact;
     TextView tvmain, tvsec;
+    Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bac, bc, bp, bsqrt, bplus, bminus, bdiv, bmod, bequal, bdot, bbrac1, bbrac2, bsin, bcos, btan, bsquare, bpi, bfact;
     int sum = 0;
     double pi = Math.PI;
+    LinearLayout layout_engineer;
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("tvmain", tvmain.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.activity_main);
 
         b1 = findViewById(R.id.b1);
@@ -49,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
 
         tvmain = findViewById(R.id.tvmain);
         tvsec = findViewById(R.id.tvsec);
+       // layout_engineer.findViewById(R.id.engineer);
+       // layout_engineer.setVisibility(View.INVISIBLE);
+
+        if (savedInstanceState != null) {
+            tvmain.setText(savedInstanceState.getString("tvmain"));
+        }
 
         //onclick listeners
         b1.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +172,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String val = tvmain.getText().toString();
-                char last = val.charAt(val.length() - 1);
-                if (last != '-') {
-                    tvmain.setText(val + bminus.getText().toString());
+
+                if (!val.equals("")) {
+                    char last = val.charAt(val.length() - 1);
+                    if (last != '-') {
+                        tvmain.setText(val + bminus.getText().toString());
+                    }
                 }
             }
         });
@@ -161,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String val = tvmain.getText().toString();
                 if (!val.equals("")) {
-                char last = val.charAt(val.length() - 1);
+                    char last = val.charAt(val.length() - 1);
                     tvmain.setText(val + bmod.getText().toString());
                 }
             }
@@ -181,11 +206,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String val = tvmain.getText().toString();
-                String replacedString = val.replace('÷', '/').replace('×', '*');
-                double result = eval(replacedString);
-                String r = String.valueOf(result);
-                tvmain.setText(r);
-                tvsec.setText(val);
+                if (!val.equals("")) {
+                    String replacedString = val.replace('÷', '/').replace('×', '*');
+                    double result = eval(replacedString);
+                    String r = String.valueOf(result);
+                    tvmain.setText(r);
+                    tvsec.setText(val);
+                }
             }
         });
         bac.setOnClickListener(new View.OnClickListener() {
@@ -199,16 +226,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String val = tvmain.getText().toString();
-                val = val.substring(0, val.length() - 1);
-                tvmain.setText(val);
+                if (!val.equals("")) {
+                    val = val.substring(0, val.length() - 1);
+                    tvmain.setText(val);
+                }
             }
         });
         bp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String val = tvmain.getText().toString();
-                val = val.substring(0, val.length() - 1);
-                tvmain.setText(val);
+                if (!val.equals("")) {
+                    val = val.substring(0, val.length() - 1);
+                    tvmain.setText(val);
+                }
             }
         });
 
@@ -227,7 +258,12 @@ public class MainActivity extends AppCompatActivity {
         bpi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvmain.setText(tvmain.getText() + bpi.getText().toString());
+                String val = tvmain.getText().toString();
+                if (val.length() > 1) {
+                    if (!val.substring(val.length() - 2, val.length() - 1).equals("\uD835\uDED1")) {
+                        tvmain.setText(tvmain.getText() + bpi.getText().toString());
+                    }
+                }
                 //hold
             }
         });
